@@ -1,0 +1,12 @@
+Library
+  signature CONFIG
+  signature NAMED
+  signature SCORED
+  signature SERIALIZABLE
+is
+  $/json-lib.cm
+
+  CONFIG.sig
+  NAMED.sig
+  SCORED.sig
+  SERIALIZABLE.sig
