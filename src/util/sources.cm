@@ -1,8 +1,15 @@
 Library
   structure Filename
   structure Util
+
+  signature SERIALIZABLE
+  functor Serialize
 is
   $/basis.cm
+  $/json-lib.cm
 
   Filename.sml
   Util.sml
+
+  SERIALIZABLE.sig
+  Serialize.fun
