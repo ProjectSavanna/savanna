@@ -20,6 +20,19 @@ structure Task :> TASK =
       Code    data => (Util.sum o List.map #points o #rubric) data
     | Written data => #points data
 
+    val toJSON   = fn
+      Code {name,file,rubric} => JSON.OBJECT [
+        ("name"  , JSON.STRING name                ),
+        ("kind"  , JSON.STRING "code"              ),
+        ("file"  , JSON.STRING file                ),
+        ("rubric", Rubric.toJSON JSON.STRING rubric)
+      ]
+    | Written {name,points,rubric} => JSON.OBJECT [
+        ("name"  , JSON.STRING name                         ),
+        ("kind"  , JSON.STRING "written"                    ),
+        ("points", JSON.INT (IntInf.fromInt points)         ),
+        ("rubric", Rubric.toJSON (Fn.const JSON.NULL) rubric)
+      ]
     val fromJSON = fn
       JSON.OBJECT [
         ("name"  , JSON.STRING name  ),
@@ -42,19 +55,6 @@ structure Task :> TASK =
           rubric = Rubric.fromJSON (Fn.const ()) rubric
         }
     | _ => raise Fail "Invalid task"
-    val toJSON   = fn
-      Code {name,file,rubric} => JSON.OBJECT [
-        ("name"  , JSON.STRING name                ),
-        ("kind"  , JSON.STRING "code"              ),
-        ("file"  , JSON.STRING file                ),
-        ("rubric", Rubric.toJSON JSON.STRING rubric)
-      ]
-    | Written {name,points,rubric} => JSON.OBJECT [
-        ("name"  , JSON.STRING name                         ),
-        ("kind"  , JSON.STRING "written"                    ),
-        ("points", JSON.INT (IntInf.fromInt points)         ),
-        ("rubric", Rubric.toJSON (Fn.const JSON.NULL) rubric)
-      ]
 
     val isCode = fn
       Code    _ => true
