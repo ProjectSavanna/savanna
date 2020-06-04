@@ -1,4 +1,6 @@
 Library
   structure Task
+  structure Problem
 is
   task/sources.cm
+  problem/sources.cm
