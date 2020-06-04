@@ -34,7 +34,7 @@ structure Task :> TASK =
         ("rubric", Rubric.toJSON (Fn.const JSON.NULL) rubric)
       ]
 
-    val fromJSON = fn path => Remote.Remote {
+    val fromJSON = fn path => Remote.hide {
       path = OS.Path.concat (path, "task.json"),
       get = fn filename => (
         case JSONParser.parseFile filename of

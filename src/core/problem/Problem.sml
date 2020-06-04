@@ -15,7 +15,7 @@ structure Problem :> PROBLEM =
     val getPoints : t -> int = Util.sum o List.map (Task.getPoints o Remote.!) o #tasks
 
     val op ^ = OS.Path.concat
-    val fromJSON = fn path => Remote.Remote {
+    val fromJSON = fn path => Remote.hide {
       path = path ^ "problem.json",
       get = fn filename => (
         case JSONParser.parseFile filename of

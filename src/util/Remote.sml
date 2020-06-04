@@ -1,9 +1,11 @@
 structure Remote :> REMOTE =
   struct
-    datatype 'a t = Remote of {
+    type 'a t = {
       path : Filename.t,
-      get : Filename.t -> 'a
+      get  : Filename.t -> 'a
     }
 
-    val ! = fn Remote {path,get,...} => get path
+    val hide = Fn.id
+
+    val ! = fn {path,get} => get path
   end
