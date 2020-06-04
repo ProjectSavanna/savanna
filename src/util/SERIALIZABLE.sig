@@ -1,6 +1,6 @@
 signature SERIALIZABLE =
   sig
     type t
-    val toJSON   : t -> JSON.value
-    val fromJSON : JSON.value -> t
+    val load : Filename.t -> t
+    val save : Filename.t -> t -> unit
   end

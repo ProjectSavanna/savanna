@@ -1,11 +1,12 @@
-functor Serialize (S : SERIALIZABLE) =
+functor Serialize (J : JSONABLE) :> SERIALIZABLE where type t = J.t =
   struct
-    val load : Filename.t -> S.t = S.fromJSON o JSONParser.parseFile
-    val save : Filename.t -> S.t -> unit = fn filename => fn s => (
+    type t = J.t
+    val load = J.fromJSON o JSONParser.parseFile
+    val save = fn path => fn s => (
       let
-        val file = TextIO.openOut filename
+        val file = TextIO.openOut path
       in
-        JSONPrinter.print' {pretty=true,strm=file} (S.toJSON s) before TextIO.closeOut file
+        JSONPrinter.print' {pretty=true,strm=file} (J.toJSON s) before TextIO.closeOut file
       end
     )
   end
