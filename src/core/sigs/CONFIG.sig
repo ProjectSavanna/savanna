@@ -2,5 +2,5 @@ signature CONFIG =
   sig
     include NAMED
     include SCORED
-    include SERIALIZABLE
+    include LOADABLE
   end

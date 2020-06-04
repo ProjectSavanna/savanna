@@ -2,9 +2,10 @@ Library
   structure Filename
   structure Util
 
-  signature JSONABLE
-  signature SERIALIZABLE
-  functor Serialize
+  signature LOADABLE
+
+  signature REMOTE
+  structure Remote
 is
   $/basis.cm
   $/json-lib.cm
@@ -13,6 +14,7 @@ is
   Filename.sml
   Util.sml
 
-  JSONABLE.sig
-  SERIALIZABLE.sig
-  Serialize.fun
+  LOADABLE.sig
+
+  REMOTE.sig
+  Remote.sml
