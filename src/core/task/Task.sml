@@ -39,23 +39,23 @@ structure Task :> TASK =
           ]
         val fromJSON = fn
           JSON.OBJECT [
-            ("name"  , JSON.STRING name  ),
+            ("name"  , name              ),
             ("kind"  , JSON.STRING "code"),
-            ("file"  , JSON.STRING file  ),
+            ("file"  , file              ),
             ("rubric", rubric            )
           ] => Code {
-            name = name,
-            file = file,
+            name = JSONUtil.asString name,
+            file = JSONUtil.asString file,
             rubric = Rubric.fromJSON JSONUtil.asString rubric
           }
         | JSON.OBJECT [
-            ("name"  , JSON.STRING name     ),
+            ("name"  , name                 ),
             ("kind"  , JSON.STRING "written"),
-            ("points", JSON.INT points      ),
+            ("points", points               ),
             ("rubric", rubric               )
           ] => Written {
-              name   = name,
-              points = IntInf.toInt points,
+              name   = JSONUtil.asString name,
+              points = JSONUtil.asInt points,
               rubric = Rubric.fromJSON (Fn.const ()) rubric
             }
         | _ => raise Fail "Invalid task"
