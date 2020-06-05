@@ -1,7 +1,8 @@
 Library
+  structure Rubric
+
   signature TASK
   structure Task
-  structure Rubric
 is
   $/basis.cm
   $/json-lib.cm

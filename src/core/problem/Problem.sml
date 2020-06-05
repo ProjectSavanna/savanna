@@ -1,11 +1,11 @@
 structure Problem :> PROBLEM =
   struct
     type t = {
-      name         : string,
-      tasks        : Task.t Remote.t list,
-      files        : Filename.t list,
-      libraries    : string list,
-      grader       : {
+      name      : string,
+      tasks     : Task.t Remote.t list,
+      files     : Filename.t list,
+      libraries : string list,
+      grader    : {
         helpers : Filename.t list,
         style   : string list
       }
@@ -20,13 +20,13 @@ structure Problem :> PROBLEM =
       get = fn filename => (
         case JSONParser.parseFile filename of
           JSON.OBJECT [
-            ("name", name),
-            ("tasks", tasks),
-            ("files", files),
+            ("name"     , name     ),
+            ("tasks"    , tasks    ),
+            ("files"    , files    ),
             ("libraries", libraries),
-            ("grader", JSON.OBJECT [
+            ("grader"   , JSON.OBJECT [
               ("helpers", helpers),
-              ("style", style)
+              ("style"  , style  )
             ])
           ] => {
             name = JSONUtil.asString name,
