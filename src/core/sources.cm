@@ -1,6 +1,8 @@
 Library
   structure Task
   structure Problem
+  structure Assignment
 is
   task/sources.cm
   problem/sources.cm
+  assignment/sources.cm

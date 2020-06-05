@@ -1,0 +1,17 @@
+Library
+  structure Kind
+
+  signature ASSIGNMENT
+  structure Assignment
+is
+  $/basis.cm
+  $/json-lib.cm
+  ../sigs/sources.cm
+  ../../util/sources.cm
+
+  ../problem/sources.cm
+
+  Kind.sml
+
+  ASSIGNMENT.sig
+  Assignment.sml
