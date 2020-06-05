@@ -1,5 +1,7 @@
 signature ASSIGNMENT =
   sig
+    structure Kind : KIND
+
     include CONFIG where type t = {
       name     : string,
       title    : string,

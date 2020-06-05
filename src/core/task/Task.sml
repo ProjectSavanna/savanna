@@ -1,5 +1,7 @@
 structure Task :> TASK =
   struct
+    structure Rubric = Rubric
+
     datatype t
       = Code of {
           name   : string,

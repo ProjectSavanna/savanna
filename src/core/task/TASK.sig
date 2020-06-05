@@ -16,6 +16,8 @@ local
 in
   signature TASK =
     sig
+      structure Rubric : RUBRIC
+
       include CONFIG
       include DATATYPE
 

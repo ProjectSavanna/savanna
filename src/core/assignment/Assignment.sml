@@ -1,5 +1,7 @@
 structure Assignment :> ASSIGNMENT =
   struct
+    structure Kind = Kind
+
     type t = {
       name     : string,
       title    : string,

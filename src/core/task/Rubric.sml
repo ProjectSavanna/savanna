@@ -1,4 +1,4 @@
-structure Rubric =
+structure Rubric :> RUBRIC =
   struct
     type 'a item = {
       grader      : 'a,

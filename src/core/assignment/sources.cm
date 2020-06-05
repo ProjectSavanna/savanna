@@ -1,6 +1,4 @@
 Library
-  structure Kind
-
   signature ASSIGNMENT
   structure Assignment
 is
@@ -11,6 +9,7 @@ is
 
   ../problem/sources.cm
 
+  KIND.sig
   Kind.sml
 
   ASSIGNMENT.sig
