@@ -1,0 +1,20 @@
+Library
+  structure Filename
+  structure Util
+
+  signature LOADABLE
+
+  signature REMOTE
+  structure Remote
+is
+  $/basis.cm
+  $/json-lib.cm
+  $/smlnj-lib.cm
+
+  Filename.sml
+  Util.sml
+
+  LOADABLE.sig
+
+  REMOTE.sig
+  Remote.sml

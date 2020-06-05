@@ -1,0 +1,12 @@
+Library
+  signature NAMED
+  signature SCORED
+
+  signature CONFIG
+is
+  ../../util/sources.cm
+
+  NAMED.sig
+  SCORED.sig
+
+  CONFIG.sig

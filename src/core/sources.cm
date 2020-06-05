@@ -1,0 +1,8 @@
+Library
+  library(task/sources.cm)
+  library(problem/sources.cm)
+  library(assignment/sources.cm)
+is
+  task/sources.cm
+  problem/sources.cm
+  assignment/sources.cm

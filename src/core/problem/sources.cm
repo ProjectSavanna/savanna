@@ -1,0 +1,13 @@
+Library
+  signature PROBLEM
+  structure Problem
+is
+  $/basis.cm
+  $/json-lib.cm
+  ../sigs/sources.cm
+  ../../util/sources.cm
+
+  ../task/sources.cm
+
+  PROBLEM.sig
+  Problem.sml
