@@ -1,7 +1,7 @@
 Library
-  structure Task
-  structure Problem
-  structure Assignment
+  library(task/sources.cm)
+  library(problem/sources.cm)
+  library(assignment/sources.cm)
 is
   task/sources.cm
   problem/sources.cm
