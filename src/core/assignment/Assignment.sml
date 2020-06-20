@@ -45,4 +45,18 @@ structure Assignment :> ASSIGNMENT =
       )
     }
 
+    val stage = fn (assignment : t, location) => (
+      let
+        val code = location ^ "code"
+        val stage = fn problem => (
+          case List.null (#files problem) of
+            false => Problem.stage (problem, code ^ #name problem)
+          | true  => ()
+        )
+      in
+        OS.FileSys.mkDir location;
+        OS.FileSys.mkDir code;
+        List.app (stage o Remote.!) (#problems assignment)
+      end
+    )
   end

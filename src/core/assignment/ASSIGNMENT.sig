@@ -12,4 +12,6 @@ signature ASSIGNMENT =
         due : Date.date
       }
     }
+
+    val stage : t * Filename.t -> unit
   end
