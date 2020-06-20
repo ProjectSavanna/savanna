@@ -2,6 +2,7 @@ structure Problem :> PROBLEM =
   struct
     type t = {
       name      : string,
+      root      : Filename.t,
       tasks     : Task.t Remote.t list,
       files     : Filename.t list,
       libraries : string list,
@@ -30,6 +31,7 @@ structure Problem :> PROBLEM =
             ])
           ] => {
             name = JSONUtil.asString name,
+            root = path,
             tasks = JSONUtil.arrayMap (Task.load o Fn.curry (op ^) (path ^ "tasks") o JSONUtil.asString) tasks,
             files = JSONUtil.arrayMap JSONUtil.asString files,
             libraries = JSONUtil.arrayMap JSONUtil.asString libraries,
@@ -42,4 +44,6 @@ structure Problem :> PROBLEM =
       )
     }
 
+    val stage = fn (problem : t, location) =>
+      FileUtils.copyTree (#root problem ^ "code", location)
   end

@@ -2,6 +2,7 @@ signature PROBLEM =
   sig
     include CONFIG where type t = {
       name      : string,
+      root      : Filename.t,
       tasks     : Task.t Remote.t list,
       files     : Filename.t list,
       libraries : string list,
@@ -10,4 +11,6 @@ signature PROBLEM =
         style   : string list
       }
     }
+
+    val stage : t * Filename.t -> unit
   end
