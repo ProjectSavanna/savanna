@@ -45,18 +45,38 @@ structure Assignment :> ASSIGNMENT =
       )
     }
 
-    val stage = fn (assignment : t, location) => (
-      let
-        val code = location ^ "code"
-        val stage = fn problem => (
-          case List.null (#files problem) of
-            false => Problem.stage (problem, code ^ #name problem)
-          | true  => ()
-        )
-      in
+    local
+      infix |>
+      val op |> = Util.|>
+      val stageCode = fn (problems : Problem.t list, location) => (
         OS.FileSys.mkDir location;
-        OS.FileSys.mkDir code;
-        List.app (stage o Remote.!) (#problems assignment)
-      end
-    )
+        List.app (fn problem =>
+          case List.null (#files problem) of
+            false => Problem.stage (problem, location ^ #name problem)
+          | true  => ()
+        ) problems
+      )
+      val stageLibraries = fn (problems : Problem.t list, location) => (
+        OS.FileSys.mkDir location;
+        problems
+        |> List.concatMap #libraries
+        |> Util.unique Library.compare
+        |> List.app (fn library =>
+            Library.stage (library, location ^ #name library)
+          )
+      )
+    in
+      val stage = fn (assignment : t, location) => (
+        let
+          val problems =
+            assignment
+            |> #problems
+            |> List.map Remote.!
+        in
+          OS.FileSys.mkDir location;
+          stageCode (problems, location ^ "code");
+          stageLibraries (problems, location ^ "lib")
+        end
+      )
+    end
   end
