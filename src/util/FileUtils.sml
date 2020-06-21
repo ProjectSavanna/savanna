@@ -71,7 +71,7 @@ structure FileUtils =
             )
         )
       in
-        mkDirs dst;
+        FileSys.mkDir dst;
         loop ()
       end
     )
