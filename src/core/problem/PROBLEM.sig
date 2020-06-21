@@ -5,7 +5,7 @@ signature PROBLEM =
       root      : Filename.t,
       tasks     : Task.t Remote.t list,
       files     : Filename.t list,
-      libraries : string list,
+      libraries : Library.t list,
       grader    : {
         helpers : Filename.t list,
         style   : string list

@@ -5,7 +5,7 @@ structure Problem :> PROBLEM =
       root      : Filename.t,
       tasks     : Task.t Remote.t list,
       files     : Filename.t list,
-      libraries : string list,
+      libraries : Library.t list,
       grader    : {
         helpers : Filename.t list,
         style   : string list
@@ -34,7 +34,7 @@ structure Problem :> PROBLEM =
             root = path,
             tasks = JSONUtil.arrayMap (Task.load o Fn.curry (op ^) (path ^ "tasks") o JSONUtil.asString) tasks,
             files = JSONUtil.arrayMap JSONUtil.asString files,
-            libraries = JSONUtil.arrayMap JSONUtil.asString libraries,
+            libraries = JSONUtil.arrayMap (Library.fromName o JSONUtil.asString) libraries,
             grader = {
               helpers = JSONUtil.arrayMap JSONUtil.asString helpers,
               style = JSONUtil.arrayMap JSONUtil.asString style
