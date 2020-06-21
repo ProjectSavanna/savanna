@@ -15,9 +15,9 @@ structure Problem :> PROBLEM =
     val getName : t -> string = #name
     val getPoints : t -> int = Util.sum o List.map (Task.getPoints o Remote.!) o #tasks
 
-    val op ^ = OS.Path.concat
+    val op / = OS.Path.concat
     val load = fn path => Remote.hide {
-      path = path ^ "problem.json",
+      path = path / "problem.json",
       get = fn filename => (
         case JSONParser.parseFile filename of
           JSON.OBJECT [
@@ -32,7 +32,7 @@ structure Problem :> PROBLEM =
           ] => {
             name = JSONUtil.asString name,
             root = path,
-            tasks = JSONUtil.arrayMap (Task.load o Fn.curry (op ^) (path ^ "tasks") o JSONUtil.asString) tasks,
+            tasks = JSONUtil.arrayMap (Task.load o Fn.curry (op /) (path / "tasks") o JSONUtil.asString) tasks,
             files = JSONUtil.arrayMap JSONUtil.asString files,
             libraries = JSONUtil.arrayMap (Library.fromName o JSONUtil.asString) libraries,
             grader = {
@@ -45,5 +45,5 @@ structure Problem :> PROBLEM =
     }
 
     val stage = fn (problem : t, location) =>
-      FileUtils.copyTree (#root problem ^ "code", location)
+      FileUtils.copyTree (#root problem / "code", location)
   end

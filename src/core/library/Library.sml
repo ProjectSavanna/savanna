@@ -5,7 +5,7 @@ structure Library :> LIBRARY =
       root : Filename.t
     }
 
-    val op ^ = OS.Path.concat
+    val op / = OS.Path.concat
 
     val compare = fn (l1 : t, l2 : t) => String.compare (#name l1, #name l2)
 
@@ -14,10 +14,10 @@ structure Library :> LIBRARY =
         NONE      => raise Fail "Undefined environment variable: SAVANNA_LIBRARIES"
       | SOME path => {
           name = name,
-          root = path ^ name
+          root = path / name
         }
     )
 
     val stage = fn (library : t, location) =>
-      FileUtils.copyTree (#root library ^ "src", location)
+      FileUtils.copyTree (#root library / "src", location)
   end

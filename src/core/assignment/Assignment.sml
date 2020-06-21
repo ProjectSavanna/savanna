@@ -16,10 +16,10 @@ structure Assignment :> ASSIGNMENT =
     val getName : t -> string = #name
     val getPoints : t -> int = Util.sum o List.map (Problem.getPoints o Remote.!) o #problems
 
-    val op ^ = OS.Path.concat
+    val op / = OS.Path.concat
     val dateFromJSON = (fn SOME d => d | NONE => raise Fail "Invalid date format") o Date.fromString o JSONUtil.asString
     val load = fn path => Remote.hide {
-      path = path ^ "assignment.json",
+      path = path / "assignment.json",
       get = fn filename => (
         case JSONParser.parseFile filename of
           JSON.OBJECT [
@@ -35,7 +35,7 @@ structure Assignment :> ASSIGNMENT =
             name = JSONUtil.asString name,
             title = JSONUtil.asString title,
             kind = Kind.fromJSON kind,
-            problems = JSONUtil.arrayMap (Problem.load o Fn.curry (op ^) (path ^ "problems") o JSONUtil.asString) problems,
+            problems = JSONUtil.arrayMap (Problem.load o Fn.curry (op /) (path / "problems") o JSONUtil.asString) problems,
             dates = {
               out = dateFromJSON out,
               due = dateFromJSON due
@@ -52,7 +52,7 @@ structure Assignment :> ASSIGNMENT =
         OS.FileSys.mkDir location;
         List.app (fn problem =>
           case List.null (#files problem) of
-            false => Problem.stage (problem, location ^ #name problem)
+            false => Problem.stage (problem, location / #name problem)
           | true  => ()
         ) problems
       )
@@ -62,7 +62,7 @@ structure Assignment :> ASSIGNMENT =
         |> List.concatMap #libraries
         |> Util.unique Library.compare
         |> List.app (fn library =>
-            Library.stage (library, location ^ #name library)
+            Library.stage (library, location / #name library)
           )
       )
     in
@@ -74,8 +74,8 @@ structure Assignment :> ASSIGNMENT =
             |> List.map Remote.!
         in
           OS.FileSys.mkDir location;
-          stageCode (problems, location ^ "code");
-          stageLibraries (problems, location ^ "lib")
+          stageCode (problems, location / "code");
+          stageLibraries (problems, location / "lib")
         end
       )
     end
