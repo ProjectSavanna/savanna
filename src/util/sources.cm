@@ -1,4 +1,6 @@
 Library
+  signature ORDERED
+
   structure Filename
   structure FileUtils
   structure Util
@@ -11,6 +13,8 @@ is
   $/basis.cm
   $/json-lib.cm
   $/smlnj-lib.cm
+
+  ORDERED.sig
 
   Filename.sml
   FileUtils.sml
