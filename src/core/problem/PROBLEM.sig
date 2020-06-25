@@ -1,6 +1,8 @@
 signature PROBLEM =
   sig
-    include CONFIG where type t = {
+    include sig
+      include CONFIG WRITABLE
+    end where type t = {
       name      : string,
       root      : Filename.t,
       tasks     : Task.t Remote.t list,
@@ -11,6 +13,4 @@ signature PROBLEM =
         style   : string list
       }
     }
-
-    val stage : t * Filename.t -> unit
   end

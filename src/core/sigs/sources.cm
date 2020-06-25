@@ -3,6 +3,7 @@ Library
   signature SCORED
 
   signature LOADABLE
+  signature WRITABLE
 
   signature CONFIG
 is
@@ -12,5 +13,6 @@ is
   SCORED.sig
 
   LOADABLE.sig
+  WRITABLE.sig
 
   CONFIG.sig

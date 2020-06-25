@@ -2,7 +2,9 @@ signature ASSIGNMENT =
   sig
     structure Kind : KIND
 
-    include CONFIG where type t = {
+    include sig
+      include CONFIG WRITABLE
+    end where type t = {
       name     : string,
       title    : string,
       kind     : Kind.t,
@@ -12,6 +14,4 @@ signature ASSIGNMENT =
         due : Date.date
       }
     }
-
-    val stage : t * Filename.t -> unit
   end
