@@ -5,8 +5,6 @@ Library
   structure FileUtils
   structure Util
 
-  signature LOADABLE
-
   signature REMOTE
   structure Remote
 is
@@ -19,8 +17,6 @@ is
   Filename.sml
   FileUtils.sml
   Util.sml
-
-  LOADABLE.sig
 
   REMOTE.sig
   Remote.sml
