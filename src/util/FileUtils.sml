@@ -84,6 +84,18 @@ structure FileUtils =
       end
     )
 
+    val foldl = fn g => fn start => fn stream => (
+      let
+        val rec loop = fn state => (
+          case TextIO.inputLine stream of
+            NONE      => state before TextIO.closeIn stream
+          | SOME line => loop (g (line,state))
+        )
+      in
+        loop start handle e => (TextIO.closeIn stream; raise e)
+      end
+    )
+
     val write = fn (openFn : string -> TextIO.outstream) => fn (filename,contents) => (
       let
         val stream = openFn filename
