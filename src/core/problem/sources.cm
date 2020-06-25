@@ -10,5 +10,7 @@ is
   ../task/sources.cm
   ../library/sources.cm
 
+  ../anchor-file/sources.cm
+
   PROBLEM.sig
   Problem.sml

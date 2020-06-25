@@ -1,0 +1,10 @@
+Library
+  signature ANCHORFILE
+  structure AnchorFile
+is
+  $/basis.cm
+  ../sigs/sources.cm
+  ../../util/sources.cm
+
+  ANCHORFILE.sig
+  AnchorFile.sml

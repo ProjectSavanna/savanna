@@ -4,7 +4,7 @@ structure Problem :> PROBLEM =
       name      : string,
       root      : Filename.t,
       tasks     : Task.t Remote.t list,
-      files     : Filename.t list,
+      files     : AnchorFile.t Remote.t list,
       libraries : Library.t list,
       grader    : {
         helpers : Filename.t list,
@@ -33,7 +33,7 @@ structure Problem :> PROBLEM =
             name = JSONUtil.asString name,
             root = path,
             tasks = JSONUtil.arrayMap (Task.load o Fn.curry (op /) (path / "tasks") o JSONUtil.asString) tasks,
-            files = JSONUtil.arrayMap JSONUtil.asString files,
+            files = JSONUtil.arrayMap (Fn.curry AnchorFile.fromPath (path / "code") o JSONUtil.asString) files,
             libraries = JSONUtil.arrayMap (Library.fromName o JSONUtil.asString) libraries,
             grader = {
               helpers = JSONUtil.arrayMap JSONUtil.asString helpers,
@@ -44,6 +44,8 @@ structure Problem :> PROBLEM =
       )
     }
 
-    val stage = fn (problem : t, location) =>
-      FileUtils.copyTree (#root problem / "code", location)
+    val stage = fn (problem : t, location) => (
+      FileUtils.copyTree (#root problem / "code", location);
+      List.app (Fn.curry (Fn.flip AnchorFile.stage) location o Remote.!) (#files problem)
+    )
   end
