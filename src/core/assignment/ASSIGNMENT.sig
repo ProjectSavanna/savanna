@@ -2,7 +2,9 @@ signature ASSIGNMENT =
   sig
     structure Kind : KIND
 
-    include CONFIG where type t = {
+    include sig
+      include CONFIG WRITABLE
+    end where type t = {
       name     : string,
       title    : string,
       kind     : Kind.t,

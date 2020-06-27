@@ -1,8 +1,9 @@
 Library
-  structure Filename
-  structure Util
+  signature ORDERED
 
-  signature LOADABLE
+  structure Filename
+  structure FileUtils
+  structure Util
 
   signature REMOTE
   structure Remote
@@ -11,10 +12,11 @@ is
   $/json-lib.cm
   $/smlnj-lib.cm
 
-  Filename.sml
-  Util.sml
+  ORDERED.sig
 
-  LOADABLE.sig
+  Filename.sml
+  FileUtils.sml
+  Util.sml
 
   REMOTE.sig
   Remote.sml

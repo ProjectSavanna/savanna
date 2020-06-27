@@ -8,6 +8,7 @@ is
   ../../util/sources.cm
 
   ../task/sources.cm
+  ../library/sources.cm
 
   PROBLEM.sig
   Problem.sml

@@ -1,10 +1,13 @@
 signature PROBLEM =
   sig
-    include CONFIG where type t = {
+    include sig
+      include CONFIG WRITABLE
+    end where type t = {
       name      : string,
+      root      : Filename.t,
       tasks     : Task.t Remote.t list,
       files     : Filename.t list,
-      libraries : string list,
+      libraries : Library.t list,
       grader    : {
         helpers : Filename.t list,
         style   : string list

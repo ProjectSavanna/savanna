@@ -2,11 +2,17 @@ Library
   signature NAMED
   signature SCORED
 
+  signature LOADABLE
+  signature WRITABLE
+
   signature CONFIG
 is
   ../../util/sources.cm
 
   NAMED.sig
   SCORED.sig
+
+  LOADABLE.sig
+  WRITABLE.sig
 
   CONFIG.sig

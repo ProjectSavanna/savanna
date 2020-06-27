@@ -1,0 +1,9 @@
+Library
+  signature LIBRARY
+  structure Library
+is
+  $/basis.cm
+  ../../util/sources.cm
+
+  LIBRARY.sig
+  Library.sml
