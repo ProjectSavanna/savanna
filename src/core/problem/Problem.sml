@@ -34,7 +34,7 @@ structure Problem :> PROBLEM =
             root = path,
             tasks = JSONUtil.arrayMap (Task.load o Fn.curry (op /) (path / "tasks") o JSONUtil.asString) tasks,
             files = JSONUtil.arrayMap JSONUtil.asString files,
-            libraries = JSONUtil.arrayMap (Library.fromName o JSONUtil.asString) libraries,
+            libraries = JSONUtil.arrayMap JSONUtil.asString libraries,
             grader = {
               helpers = JSONUtil.arrayMap JSONUtil.asString helpers,
               style = JSONUtil.arrayMap JSONUtil.asString style
@@ -55,20 +55,18 @@ structure Problem :> PROBLEM =
           | true  => ()
         ) problems
       )
-      val stageLibraries = fn (problems : t list, location) => (
+      val stageLibraries = fn stage => fn (problems : t list, location) => (
         OS.FileSys.mkDir location;
         problems
         |> List.concatMap #libraries
         |> Util.unique Library.compare
-        |> List.app (fn library =>
-            Library.stage (library, location / #name library)
-          )
+        |> List.app (fn library => stage library (location / library))
       )
     in
-      val handout = fn problems => fn location => (
+      val handout = fn problems => fn stageLibrary => fn location => (
         OS.FileSys.mkDir location;
         stageCode (problems, location / "code");
-        stageLibraries (problems, location / "lib")
+        stageLibraries stageLibrary (problems, location / "lib")
       )
     end
   end

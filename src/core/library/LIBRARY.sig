@@ -1,10 +1,6 @@
 signature LIBRARY =
   sig
-    include ORDERED where type t = {
-      name : string,
-      root : Filename.t
-    }
+    include ORDERED where type t = string
 
-    val fromName : string -> t
-    val stage : t * Filename.t -> unit
+    val stage : Filename.t -> t -> Filename.t -> unit
   end
