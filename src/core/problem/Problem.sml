@@ -40,10 +40,35 @@ structure Problem :> PROBLEM =
               style = JSONUtil.arrayMap JSONUtil.asString style
             }
           }
-        | _ => raise Fail "Invalid problem"
+        | _ => raise Fail ("Invalid problem at " ^ path)
       )
     }
 
-    val stage = fn (problem : t, location) =>
-      FileUtils.copyTree (#root problem / "code", location)
+    local
+      infix |>
+      val op |> = Util.|>
+      val stageCode = fn (problems : t list, location) => (
+        OS.FileSys.mkDir location;
+        List.app (fn problem =>
+          case List.null (#files problem) of
+            false => FileUtils.copyTree (#root problem / "code", location / #name problem)
+          | true  => ()
+        ) problems
+      )
+      val stageLibraries = fn (problems : t list, location) => (
+        OS.FileSys.mkDir location;
+        problems
+        |> List.concatMap #libraries
+        |> Util.unique Library.compare
+        |> List.app (fn library =>
+            Library.stage (library, location / #name library)
+          )
+      )
+    in
+      val handout = fn problems => fn location => (
+        OS.FileSys.mkDir location;
+        stageCode (problems, location / "code");
+        stageLibraries (problems, location / "lib")
+      )
+    end
   end
