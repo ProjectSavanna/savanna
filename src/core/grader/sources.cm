@@ -1,5 +1,6 @@
 Library
   signature GRADER
+  structure CodeGrader
 is
   $/basis.cm
   $/json-lib.cm
@@ -9,3 +10,4 @@ is
   ../library/sources.cm
 
   GRADER.sig
+  CodeGrader.sml
