@@ -1,14 +1,11 @@
 Library
-  signature PROBLEM
-  functor Problem
+  signature GRADER
 is
   $/basis.cm
   $/json-lib.cm
   ../sigs/sources.cm
   ../../util/sources.cm
 
-  ../grader/sources.cm
   ../library/sources.cm
 
-  PROBLEM.sig
-  Problem.sml
+  GRADER.sig
