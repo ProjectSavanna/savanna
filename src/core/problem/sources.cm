@@ -7,7 +7,6 @@ is
   ../sigs/sources.cm
   ../../util/sources.cm
 
-  ../task/sources.cm
   ../library/sources.cm
 
   PROBLEM.sig
