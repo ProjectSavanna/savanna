@@ -1,6 +1,5 @@
 Library
   signature NAMED
-  signature SCORED
 
   signature LOADABLE
   signature WRITABLE
@@ -10,7 +9,6 @@ is
   ../../util/sources.cm
 
   NAMED.sig
-  SCORED.sig
 
   LOADABLE.sig
   WRITABLE.sig
