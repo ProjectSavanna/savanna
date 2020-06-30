@@ -1,9 +1,5 @@
-local
-  type handout = (Library.t -> Filename.t -> unit) -> Filename.t -> unit
-in
-  signature PROBLEM =
-    sig
-      include CONFIG
-      val handout : t list -> handout
-    end
-end
+signature PROBLEM =
+  sig
+    include CONFIG
+    val handout : t -> Filename.t -> Library.t list
+  end
