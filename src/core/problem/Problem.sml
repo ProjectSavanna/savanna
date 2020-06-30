@@ -28,29 +28,11 @@ structure Problem :> PROBLEM =
       )
     }
 
-    local
-      infix |>
-      val op |> = Util.|>
-      val stageCode = fn (problems : t list, location) => (
-        OS.FileSys.mkDir location;
-        List.app (fn problem =>
-          case List.null (#files problem) of
-            false => FileUtils.copyTree (#root problem / "code", location / #name problem)
-          | true  => ()
-        ) problems
-      )
-      val stageLibraries = fn stage => fn (problems : t list, location) => (
-        OS.FileSys.mkDir location;
-        problems
-        |> List.concatMap #libraries
-        |> Util.unique Library.compare
-        |> List.app (fn library => stage library (location / library))
-      )
-    in
-      val handout = fn problems => fn stageLibrary => fn location => (
-        OS.FileSys.mkDir location;
-        stageCode (problems, location / "code");
-        stageLibraries stageLibrary (problems, location / "lib")
-      )
-    end
+    val handout = fn problem : t => fn location => (
+      OS.FileSys.mkDir location; (
+        case List.null (#files problem) of
+          false => FileUtils.copyTree (#root problem / "code", location / #name problem)
+        | true  => ()
+      ); #libraries problem
+    )
   end
