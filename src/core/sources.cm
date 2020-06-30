@@ -2,9 +2,7 @@ Library
   library(library/sources.cm)
   library(task/sources.cm)
   library(problem/sources.cm)
-  library(assignment/sources.cm)
 is
   library/sources.cm
   task/sources.cm
   problem/sources.cm
-  assignment/sources.cm
