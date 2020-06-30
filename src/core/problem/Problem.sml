@@ -38,9 +38,6 @@ functor Problem (Grader : GRADER) :> PROBLEM =
       ); #libraries problem
     )
 
-    local
-      val getGrader = fn problem : t => #grader problem
-    in
-      val grader = Grader.stage o Remote.! o getGrader
-    end
+    val grader = fn problem : t => fn location =>
+      Grader.stage (Remote.! (#grader problem)) location @ #libraries problem
   end
