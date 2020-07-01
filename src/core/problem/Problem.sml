@@ -17,7 +17,7 @@ functor Problem (Grader : GRADER) :> PROBLEM =
             ("libraries", libraries)
           ] => {
             root = path,
-            grader = Grader.load path,
+            grader = Grader.load (path / "grader"),
             files = JSONUtil.arrayMap JSONUtil.asString files,
             libraries = JSONUtil.arrayMap JSONUtil.asString libraries
           }
