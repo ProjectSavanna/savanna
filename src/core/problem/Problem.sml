@@ -1,14 +1,11 @@
 functor Problem (Grader : GRADER) :> PROBLEM =
   struct
     type t = {
-      name      : string,
       root      : Filename.t,
       grader    : Grader.t Remote.t,
       files     : Filename.t list,
       libraries : Library.t list
     }
-
-    val getName : t -> string = #name
 
     val op / = OS.Path.concat
     val load = fn path => Remote.hide {
@@ -16,11 +13,9 @@ functor Problem (Grader : GRADER) :> PROBLEM =
       get = fn path => (
         case JSONParser.parseFile (path / "problem.json") of
           JSON.OBJECT [
-            ("name"     , name     ),
             ("files"    , files    ),
             ("libraries", libraries)
           ] => {
-            name = JSONUtil.asString name,
             root = path,
             grader = Grader.load path,
             files = JSONUtil.arrayMap JSONUtil.asString files,
@@ -30,12 +25,10 @@ functor Problem (Grader : GRADER) :> PROBLEM =
       )
     }
 
-    val handout = fn problem : t => fn location => (
-      OS.FileSys.mkDir location; (
-        case List.null (#files problem) of
-          false => FileUtils.copyTree (#root problem / "code", location / #name problem)
-        | true  => ()
-      ); #libraries problem
+    val handout = fn problem : t => fn location => #libraries problem before (
+      case List.null (#files problem) of
+        false => FileUtils.copyTree (#root problem / "code", location)
+      | true  => ()
     )
 
     val grader = fn problem : t => fn location =>
