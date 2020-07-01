@@ -1,8 +1,9 @@
-structure Problem :> PROBLEM =
+functor Problem (Grader : GRADER) :> PROBLEM =
   struct
     type t = {
       name      : string,
       root      : Filename.t,
+      grader    : Grader.t Remote.t,
       files     : Filename.t list,
       libraries : Library.t list
     }
@@ -11,9 +12,9 @@ structure Problem :> PROBLEM =
 
     val op / = OS.Path.concat
     val load = fn path => Remote.hide {
-      path = path / "problem.json",
-      get = fn filename => (
-        case JSONParser.parseFile filename of
+      path = path,
+      get = fn path => (
+        case JSONParser.parseFile (path / "problem.json") of
           JSON.OBJECT [
             ("name"     , name     ),
             ("files"    , files    ),
@@ -21,6 +22,7 @@ structure Problem :> PROBLEM =
           ] => {
             name = JSONUtil.asString name,
             root = path,
+            grader = Grader.load path,
             files = JSONUtil.arrayMap JSONUtil.asString files,
             libraries = JSONUtil.arrayMap JSONUtil.asString libraries
           }
@@ -35,4 +37,7 @@ structure Problem :> PROBLEM =
         | true  => ()
       ); #libraries problem
     )
+
+    val grader = fn problem : t => fn location =>
+      Grader.stage (Remote.! (#grader problem)) location @ #libraries problem
   end
