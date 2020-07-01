@@ -1,16 +1,8 @@
 Library
-  signature NAMED
-
   signature LOADABLE
   signature WRITABLE
-
-  signature CONFIG
 is
   ../../util/sources.cm
 
-  NAMED.sig
-
   LOADABLE.sig
   WRITABLE.sig
-
-  CONFIG.sig
