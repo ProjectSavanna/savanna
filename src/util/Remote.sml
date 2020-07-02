@@ -1,17 +1,11 @@
 structure Remote :> REMOTE =
   struct
     type 'a t = {
-      path : Filename.t,
-      get  : Filename.t -> 'a
+      path : Filename.absolute Filename.t,
+      get  : Filename.absolute Filename.t -> 'a
     }
 
-    val hide = fn {path=path,get=get} => {
-      path = OS.Path.mkAbsolute {
-        path = path,
-        relativeTo = OS.FileSys.getDir ()
-      },
-      get  = get
-    }
+    val hide = Fn.id
 
     val ! = fn {path,get} => get path
   end

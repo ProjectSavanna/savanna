@@ -12,12 +12,12 @@ structure CodeGrader :> GRADER =
         val fromJSON = JSONUtil.asInt
       end
 
-    type t = Filename.t * {
+    type t = Filename.absolute Filename.t * {
       name   : string,
       points : Score.t
     } list
 
-    val op / = OS.Path.concat
+    val op / = Filename.concat
 
     val load = fn path => Remote.hide {
       path = path,
@@ -28,7 +28,7 @@ structure CodeGrader :> GRADER =
             name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
             points = Score.fromJSON (JSONUtil.lookupField obj "points")
           })
-          (JSONParser.parseFile (path / "grader.json"))
+          (FileUtils.parseJSON (path / Filename.` "grader.json"))
       )
     }
 

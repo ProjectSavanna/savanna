@@ -1,7 +1,9 @@
 Library
   signature ORDERED
 
+  signature FILENAME
   structure Filename
+
   structure FileUtils
   structure Util
 
@@ -16,7 +18,9 @@ is
 
   ORDERED.sig
 
+  FILENAME.sig
   Filename.sml
+
   FileUtils.sml
   Util.sml
 

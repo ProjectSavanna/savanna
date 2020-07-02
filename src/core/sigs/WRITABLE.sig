@@ -1,5 +1,5 @@
 signature WRITABLE =
   sig
     type t
-    val stage : t * Filename.t -> unit
+    val stage : t * absolute Filename.t -> unit
   end
