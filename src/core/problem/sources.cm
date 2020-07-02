@@ -11,4 +11,4 @@ is
   ../library/sources.cm
 
   PROBLEM.sig
-  Problem.sml
+  Problem.fun
