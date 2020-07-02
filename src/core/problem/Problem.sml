@@ -48,7 +48,7 @@ functor Problem (Grader : GRADER) :> PROBLEM =
     in
       val writeup = fn problem : t => fn codepath => LaTeX.toString (List.foldMapr Concat NewLine (Text "") [
         Def ("codepath","",Text codepath),
-        Def ("attribute","#1",makeSwitch (Remote.! (#grader problem))),
+        Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
         Import (#root problem ^ "/writeup/","writeup"),
         ClearPage,
         StepCounter "problem",
