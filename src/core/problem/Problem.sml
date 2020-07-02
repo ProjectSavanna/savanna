@@ -11,7 +11,7 @@ functor Problem (Grader : GRADER) :> PROBLEM =
     val load = fn path => Remote.hide {
       path = path,
       get = fn path => (
-        case JSONParser.parseFile (Filename.toString (path / Filename.` "problem.json")) of
+        case FileUtils.parseJSON (path / Filename.` "problem.json") of
           JSON.OBJECT [
             ("files"    , files    ),
             ("libraries", libraries)

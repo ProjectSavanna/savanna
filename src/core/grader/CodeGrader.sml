@@ -28,7 +28,7 @@ structure CodeGrader :> GRADER =
             name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
             points = Score.fromJSON (JSONUtil.lookupField obj "points")
           })
-          (JSONParser.parseFile (Filename.toString (path / Filename.` "grader.json")))
+          (FileUtils.parseJSON (path / Filename.` "grader.json"))
       )
     }
 

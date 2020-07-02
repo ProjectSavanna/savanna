@@ -102,4 +102,6 @@ structure FileUtils =
       end
     )
 
+    val parseJSON : Filename.absolute Filename.t -> JSON.value = JSONParser.parseFile o Filename.toString
+
   end
