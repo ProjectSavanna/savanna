@@ -3,8 +3,8 @@ signature REMOTE =
     type 'a t
 
     val hide : {
-      path : Filename.t,
-      get  : Filename.t -> 'a
+      path : Filename.absolute Filename.t,
+      get  : Filename.absolute Filename.t -> 'a
     } -> 'a t
 
     val !  : 'a t -> 'a

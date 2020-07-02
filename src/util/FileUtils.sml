@@ -4,6 +4,8 @@ structure FileUtils =
     structure FileSys = OS.FileSys
     structure Path = OS.Path
 
+    type filename = Filename.absolute Filename.t
+
     exception RmError
 
     val rec rmTree = fn path => (
@@ -51,30 +53,37 @@ structure FileUtils =
       end
     )
 
-    val rec copyTree = fn (src,dst) => (
-      let
-        val ds = FileSys.openDir src
-        val rec loop = fn () => (
-          case FileSys.readDir ds of
-            NONE      => FileSys.closeDir ds
-          | SOME name => (
-              let
-                val srcName = Path.concat (src,name)
-                val dstName = Path.concat (dst,name)
-              in
-                (
-                  case FileSys.isDir srcName of
-                    false => copyFile
-                  | true  => copyTree
-                ) (srcName,dstName); loop ()
-              end
-            )
-        )
-      in
-        FileSys.mkDir dst;
-        loop ()
-      end
-    )
+    local
+      val rec copyTree = fn (src,dst) => (
+        let
+          val ds = FileSys.openDir src
+          val rec loop = fn () => (
+            case FileSys.readDir ds of
+              NONE      => FileSys.closeDir ds
+            | SOME name => (
+                let
+                  val srcName = Path.concat (src,name)
+                  val dstName = Path.concat (dst,name)
+                in
+                  (
+                    case FileSys.isDir srcName of
+                      false => copyFile
+                    | true  => copyTree
+                  ) (srcName,dstName); loop ()
+                end
+              )
+          )
+        in
+          FileSys.mkDir dst;
+          loop ()
+        end
+      )
+    in
+      val copyTree = fn (src : filename, dst : filename) => copyTree (
+        Filename.toString src,
+        Filename.toString dst
+      )
+    end
 
     val read = fn filename => (
       let

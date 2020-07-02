@@ -15,7 +15,7 @@ structure LaTeX =
       | ClearPage
       | GetCounter of counter
       | StepCounter of counter
-      | Import of Filename.t * string
+      | Import of Filename.absolute Filename.t * string
       | Concat of t * t
       | NewLine of t
 
@@ -40,7 +40,7 @@ structure LaTeX =
       | ClearPage => "\\clearpage"
       | GetCounter counter => "\\the" ^ counter
       | StepCounter counter => "\\stepcounter{" ^ counter ^ "}"
-      | Import (path,file) => "\\import{" ^ path ^ "}{" ^ file ^ "}"
+      | Import (path,file) => "\\import{" ^ Filename.toString path ^ "/}{" ^ file ^ "}"
       | Concat (a,b) => toString a ^ toString b
       | NewLine a => toString a ^ "%\n"
     end

@@ -1,27 +1,27 @@
 functor Problem (Grader : GRADER) :> PROBLEM =
   struct
     type t = {
-      root      : Filename.t,
+      root      : Filename.absolute Filename.t,
       grader    : Grader.t Remote.t,
-      files     : Filename.t list,
+      files     : Filename.relative Filename.t list,
       libraries : Library.t list
     }
 
-    val op / = OS.Path.concat
+    val op / = Filename.concat
     val load = fn path => Remote.hide {
       path = path,
       get = fn path => (
-        case JSONParser.parseFile (path / "problem.json") of
+        case JSONParser.parseFile (Filename.toString (path / Filename.` "problem.json")) of
           JSON.OBJECT [
             ("files"    , files    ),
             ("libraries", libraries)
           ] => {
             root = path,
-            grader = Grader.load (path / "grader"),
-            files = JSONUtil.arrayMap JSONUtil.asString files,
+            grader = Grader.load (path / Filename.` "grader"),
+            files = JSONUtil.arrayMap (Filename.` o JSONUtil.asString) files,
             libraries = JSONUtil.arrayMap JSONUtil.asString libraries
           }
-        | _ => raise Fail ("Invalid problem at " ^ path)
+        | _ => raise Fail ("Invalid problem at " ^ Filename.toString path)
       )
     }
 
@@ -48,15 +48,15 @@ functor Problem (Grader : GRADER) :> PROBLEM =
     in
       val writeup = fn problem : t => fn codepath => LaTeX.toString (
         List.foldMapr Concat NewLine (Text "") [
-          Def ("codepath","",Text codepath),  (* set \codepath, used by \path{} *)
+          Def ("codepath","",Text (Filename.toString codepath)),  (* set \codepath, used by \path{} *)
           Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
-          Import (#root problem ^ "/writeup/","writeup"),
+          Import (#root problem / Filename.` "writeup","writeup"),
           ClearPage,
           StepCounter "problem",
           IfNum (  (* guarantee each problem uses exactly one section, so taskscore switch works *)
             (Counter "problem",EQUAL,Counter "section"),
             Text "",
-            Error (Text ("Problem used multiple sections: " ^ #root problem))
+            Error (Text ("Problem used multiple sections: " ^ Filename.toString (#root problem)))
           )
         ]
       ) ^ "\n"
@@ -64,7 +64,7 @@ functor Problem (Grader : GRADER) :> PROBLEM =
 
     val handout = fn problem : t => fn location => #libraries problem before (
       case List.null (#files problem) of
-        false => FileUtils.copyTree (#root problem / "code", location)
+        false => FileUtils.copyTree (#root problem / Filename.` "code", location)
       | true  => ()
     )
 

@@ -1,7 +1,7 @@
 signature PROBLEM =
   sig
     include LOADABLE
-    val grader  : t -> Filename.t -> Library.t list
-    val handout : t -> Filename.t -> Library.t list
-    val writeup : t -> Filename.t -> string
+    val grader  : t -> Filename.absolute Filename.t -> Library.t list
+    val handout : t -> Filename.absolute Filename.t -> Library.t list
+    val writeup : t -> Filename.relative Filename.t -> string
   end

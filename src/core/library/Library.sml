@@ -4,7 +4,9 @@ structure Library :> LIBRARY =
 
     val compare = String.compare
 
-    val op / = OS.Path.concat
-    val stage = fn path => fn library => fn location =>
-      FileUtils.copyTree (path / library / "src", location)
+    val op / = Filename.concat
+    val stage = fn path => fn library => fn location => FileUtils.copyTree (
+      path / Filename.` library / Filename.` "src",
+      location
+    )
   end
