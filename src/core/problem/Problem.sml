@@ -32,9 +32,9 @@ functor Problem (Grader : GRADER) :> PROBLEM =
         List.foldri
           (fn (i,(name,score),acc) =>
             IfNum (
-              (Counter "task",EQUAL,Constant (i + 1)),
+              (Counter "task",EQUAL,Constant (i + 1)),  (* check if task counter (one-indexed) matches *)
               NewLine (
-                IfStrEqual (
+                IfStrEqual (  (* cross-validate label in writeup with expected label *)
                   ("#1",name),
                   Text (Grader.Score.toString score),
                   Error (Concat (Text ("Invalid placement of task: " ^ name ^ " at "), GetCounter "task"))
@@ -43,21 +43,23 @@ functor Problem (Grader : GRADER) :> PROBLEM =
               acc
             )
           )
-          (Error (Text "Too many tasks!"))
+          (Error (Text "Writeup contains more tasks than were expected"))
         o Grader.tasks
     in
-      val writeup = fn problem : t => fn codepath => LaTeX.toString (List.foldMapr Concat NewLine (Text "") [
-        Def ("codepath","",Text codepath),
-        Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
-        Import (#root problem ^ "/writeup/","writeup"),
-        ClearPage,
-        StepCounter "problem",
-        IfNum (
-          (Counter "problem",EQUAL,Counter "section"),
-          Text "",
-          Error (Text ("Oh no! Multiple sections in problem from " ^ #root problem))
-        )
-      ]) ^ "\n"
+      val writeup = fn problem : t => fn codepath => LaTeX.toString (
+        List.foldMapr Concat NewLine (Text "") [
+          Def ("codepath","",Text codepath),  (* set \codepath, used by \path{} *)
+          Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
+          Import (#root problem ^ "/writeup/","writeup"),
+          ClearPage,
+          StepCounter "problem",
+          IfNum (  (* guarantee each problem uses exactly one section, so taskscore switch works *)
+            (Counter "problem",EQUAL,Counter "section"),
+            Text "",
+            Error (Text ("Problem used multiple sections: " ^ #root problem))
+          )
+        ]
+      ) ^ "\n"
     end
 
     val handout = fn problem : t => fn location => #libraries problem before (
