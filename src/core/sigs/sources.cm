@@ -1,8 +1,14 @@
 Library
+  signature SHOW
+  signature MONOID
+
   signature LOADABLE
   signature WRITABLE
 is
   ../../util/sources.cm
+
+  SHOW.sig
+  MONOID.sig
 
   LOADABLE.sig
   WRITABLE.sig
