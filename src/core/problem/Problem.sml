@@ -26,27 +26,38 @@ functor Problem (Grader : GRADER) :> PROBLEM =
     }
 
     local
-      val concatWith = fn sep => String.concat o List.map (Fn.curry (Fn.flip (op ^)) sep)
+      datatype number = datatype LaTeX.number
+      datatype latex = datatype LaTeX.t
       val makeSwitch =
-        concatWith "%\n"
-        o List.foldri
-            (fn (i,(name,score),acc) =>
-              "\\ifnum \\value{task} = " ^ Int.toString (i + 1) ^ " "
-              :: "\\ifstrequal{#1}{" ^ name ^ "}{" ^ Grader.Score.toString score ^ "}{\\GenericError{}{Invalid placement of task: " ^ name ^ " at \\thetask}{}{}}"
-              :: "\\else"
-              :: acc @ ["\\fi"]
+        List.foldri
+          (fn (i,(name,score),acc) =>
+            IfNum (
+              (Counter "task",EQUAL,Constant (i + 1)),
+              NewLine (
+                IfStrEqual (
+                  ("#1",name),
+                  Text (Grader.Score.toString score),
+                  Error (Concat (Text ("Invalid placement of task: " ^ name ^ " at "), GetCounter "task"))
+                )
+              ),
+              acc
             )
-            ["\\GenericError{}{Too many tasks!}{}{}"]
+          )
+          (Error (Text "Too many tasks!"))
         o Grader.tasks
     in
-      val writeup = fn problem : t => fn codepath => concatWith "\n" [
-        "\\def\\codepath{" ^ codepath ^ "}",
-        "\\def\\attribute#1{" ^ makeSwitch (Remote.! (#grader problem)) ^ "}",
-        "\\import{" ^ #root problem ^ "/writeup/}{writeup}",
-        "\\clearpage",
-        "\\stepcounter{problem}",
-        "\\ifnum \\value{problem} = \\value{section} \\else \\GenericError{}{Oh no! Multiple sections in problem from " ^ #root problem ^ ".}{}{} \\fi"
-      ]
+      val writeup = fn problem : t => fn codepath => LaTeX.toString (List.foldMapr Concat NewLine (Text "") [
+        Def ("codepath","",Text codepath),
+        Def ("attribute","#1",makeSwitch (Remote.! (#grader problem))),
+        Import (#root problem ^ "/writeup/","writeup"),
+        ClearPage,
+        StepCounter "problem",
+        IfNum (
+          (Counter "problem",EQUAL,Counter "section"),
+          Text "",
+          Error (Text ("Oh no! Multiple sections in problem from " ^ #root problem))
+        )
+      ]) ^ "\n"
     end
 
     val handout = fn problem : t => fn location => #libraries problem before (
