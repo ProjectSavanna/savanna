@@ -2,7 +2,9 @@ Library
   library(grader/sources.cm)
   library(library/sources.cm)
   library(problem/sources.cm)
+  library(assignment/sources.cm)
 is
   grader/sources.cm
   library/sources.cm
   problem/sources.cm
+  assignment/sources.cm
