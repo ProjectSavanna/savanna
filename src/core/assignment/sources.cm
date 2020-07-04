@@ -1,0 +1,14 @@
+Library
+  signature ASSIGNMENT
+  functor Assignment
+is
+  $/basis.cm
+  $/json-lib.cm
+  ../sigs/sources.cm
+  ../../util/sources.cm
+
+  ../library/sources.cm
+  ../problem/sources.cm
+
+  ASSIGNMENT.sig
+  Assignment.fun

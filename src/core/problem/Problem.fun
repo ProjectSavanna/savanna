@@ -46,9 +46,9 @@ functor Problem (Grader : GRADER) :> PROBLEM =
           (Error (Text "Writeup contains more tasks than were expected"))
         o Grader.tasks
     in
-      val writeup = fn problem : t => fn codepath => LaTeX.toString (
+      val writeup = fn problem : t => fn codepath => NewLine (
         List.foldMapr Concat NewLine (Text "") [
-          Def ("codepath","",Text (Filename.toString codepath)),  (* set \codepath, used by \path{} *)
+          Def ("codepath","",Text (Filename.toString codepath ^ "/")),  (* set \codepath, used by \path{} *)
           Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
           Import (#root problem / Filename.` "writeup","writeup"),
           ClearPage,
@@ -59,7 +59,7 @@ functor Problem (Grader : GRADER) :> PROBLEM =
             Error (Text ("Problem used multiple sections: " ^ Filename.toString (#root problem)))
           )
         ]
-      ) ^ "\n"
+      )
     end
 
     val handout = fn problem : t => fn location => #libraries problem before (

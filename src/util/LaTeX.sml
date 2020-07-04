@@ -13,9 +13,14 @@ structure LaTeX =
       | Error of t
       | Def of string * string * t
       | ClearPage
+      | TableOfContents
       | GetCounter of counter
       | StepCounter of counter
+      | NewCounter of counter
       | Import of Filename.absolute Filename.t * string
+      | UsePackage of string option * string
+      | Environment of string * t
+      | DocumentClass of string
       | Concat of t * t
       | NewLine of t
 
@@ -38,9 +43,21 @@ structure LaTeX =
       | Error message => "\\GenericError{}{" ^ toString message ^ "}{}{}"
       | Def (name,args,res) => "\\def\\" ^ name ^ args ^ "{" ^ toString res ^ "}"
       | ClearPage => "\\clearpage"
+      | TableOfContents => "\\tableofcontents"
       | GetCounter counter => "\\the" ^ counter
       | StepCounter counter => "\\stepcounter{" ^ counter ^ "}"
+      | NewCounter counter => "\\newcounter{" ^ counter ^ "}"
       | Import (path,file) => "\\import{" ^ Filename.toString path ^ "/}{" ^ file ^ "}"
+      | UsePackage (options,package) => (
+          "\\usepackage" ^ (
+            case options of
+              NONE      => ""
+            | SOME opts => "[" ^ opts ^ "]"
+          )
+          ^ "{" ^ package ^ "}"
+        )
+      | Environment (name,a) => "\\begin{" ^ name ^ "}" ^ toString a ^ "\\end{" ^ name ^ "}"
+      | DocumentClass class => "\\documentclass{" ^ class ^ "}"
       | Concat (a,b) => toString a ^ toString b
       | NewLine a => toString a ^ "%\n"
     end
