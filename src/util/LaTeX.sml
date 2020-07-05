@@ -13,10 +13,22 @@ structure LaTeX =
         | Counter c  => "\\value{" ^ c ^ "}"
       end
 
+    structure Font =
+      struct
+        datatype t
+          = Normal
+          | TeleType
+
+        val toString = fn
+          Normal => "\\textnormal"
+        | TeleType => "\\texttt"
+      end
+
     structure Macro =
       struct
         datatype t
           = Text of string
+          | Font of Font.t * t
           | IfNum of (Number.t * order * Number.t) * t * t
           | IfStrEqual of (string * string) * t * t
           | Error of t
@@ -35,6 +47,7 @@ structure LaTeX =
 
         val rec toString = fn
           Text s => s
+        | Font (f,s) => Font.toString f ^ "{" ^ toString s ^ "}"
         | IfNum ((x,r,y),t,e) => (
             "\\ifnum " ^ Number.toString x ^ " " ^ (
               case r of

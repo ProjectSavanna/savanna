@@ -12,7 +12,8 @@ functor Problem (Score :
       files     : Filename.relative Filename.t list,
       tasks     : {
         name   : string,
-        points : Score.t
+        points : Score.t,
+        filename : Filename.relative Filename.t
       } list,
       libraries : Library.t list
     }
@@ -32,7 +33,8 @@ functor Problem (Score :
             tasks = JSONUtil.arrayMap
               (fn obj => {
                 name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
-                points = Score.fromJSON (JSONUtil.lookupField obj "points")
+                points = Score.fromJSON (JSONUtil.lookupField obj "points"),
+                filename = Filename.` (JSONUtil.asString (JSONUtil.lookupField obj "filename"))
               })
               tasks,
             libraries = JSONUtil.arrayMap JSONUtil.asString libraries
@@ -46,15 +48,18 @@ functor Problem (Score :
     local
       structure N = LaTeX.Number
       structure M = LaTeX.Macro
-      val makeSwitch =
+      val makeSwitch = fn codepath =>
         List.foldri
-          (fn (i,{name=name,points=score},acc) =>
+          (fn (i,{name=name,points=score,filename=filename},acc) =>
             M.IfNum (
               (N.Counter "task",EQUAL,N.Constant (i + 1)),  (* check if task counter (one-indexed) matches *)
               M.NewLine (
                 M.IfStrEqual (  (* cross-validate label in writeup with expected label *)
                   ("#1",name),
-                  M.Text (Score.toString score),
+                  M.Concat (
+                    M.Text (Score.toString score ^ ", "),
+                    M.Font (LaTeX.Font.TeleType, M.Text (Filename.toString (codepath / filename)))
+                  ),
                   M.Error (M.Concat (M.Text ("Invalid placement of task: " ^ name ^ " at "), M.GetCounter "task"))
                 )
               ),
@@ -66,7 +71,7 @@ functor Problem (Score :
       val writeup = fn problem : t => fn codepath => M.NewLine (
         List.foldMapr M.Concat M.NewLine (M.Text "") [
           M.Def ("codepath","",M.Text (Filename.toString codepath ^ "/")),  (* set \codepath, used by \path{} *)
-          M.Def ("taskscore","#1",makeSwitch (#tasks problem)),
+          M.Def ("taskscore","#1",makeSwitch codepath (#tasks problem)),
           M.Import (#root problem / Filename.` "writeup","writeup"),
           M.ClearPage,
           M.StepCounter "problem",
