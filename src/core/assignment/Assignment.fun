@@ -59,6 +59,7 @@ functor Assignment (Problem : PROBLEM) :> ASSIGNMENT =
               M.NewCounter "problem",
               M.UsePackage (SOME "subpreambles=true,sort=true,mode=buildnew","standalone"),
               M.UsePackage (NONE,"import"),
+              M.Title (#title assignment),
               M.Environment (
                 "document",
                 M.Concat (

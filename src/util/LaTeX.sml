@@ -33,6 +33,7 @@ structure LaTeX =
           | IfStrEqual of (string * string) * t * t
           | Error of t
           | Def of string * string * t
+          | Title of string
           | ClearPage
           | TableOfContents
           | GetCounter of counter
@@ -59,6 +60,7 @@ structure LaTeX =
         | IfStrEqual ((x,y),t,e) => "\\ifstrequal{" ^ x ^ "}{" ^ y ^ "}{" ^ toString t ^ "}{" ^ toString e ^ "}"
         | Error message => "\\GenericError{}{" ^ toString message ^ "}{}{}"
         | Def (name,args,res) => "\\def\\" ^ name ^ args ^ "{" ^ toString res ^ "}"
+        | Title title => "\\title{" ^ title ^ "}"
         | ClearPage => "\\clearpage"
         | TableOfContents => "\\tableofcontents"
         | GetCounter counter => "\\the" ^ counter
