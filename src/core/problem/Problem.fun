@@ -26,37 +26,37 @@ functor Problem (Grader : GRADER) :> PROBLEM =
     }
 
     local
-      datatype number = datatype LaTeX.number
-      datatype latex = datatype LaTeX.t
+      structure N = LaTeX.Number
+      structure M = LaTeX.Macro
       val makeSwitch =
         List.foldri
           (fn (i,(name,score),acc) =>
-            IfNum (
-              (Counter "task",EQUAL,Constant (i + 1)),  (* check if task counter (one-indexed) matches *)
-              NewLine (
-                IfStrEqual (  (* cross-validate label in writeup with expected label *)
+            M.IfNum (
+              (N.Counter "task",EQUAL,N.Constant (i + 1)),  (* check if task counter (one-indexed) matches *)
+              M.NewLine (
+                M.IfStrEqual (  (* cross-validate label in writeup with expected label *)
                   ("#1",name),
-                  Text (Grader.Score.toString score),
-                  Error (Concat (Text ("Invalid placement of task: " ^ name ^ " at "), GetCounter "task"))
+                  M.Text (Grader.Score.toString score),
+                  M.Error (M.Concat (M.Text ("Invalid placement of task: " ^ name ^ " at "), M.GetCounter "task"))
                 )
               ),
               acc
             )
           )
-          (Error (Text "Writeup contains more tasks than were expected"))
+          (M.Error (M.Text "Writeup contains more tasks than were expected"))
         o Grader.tasks
     in
-      val writeup = fn problem : t => fn codepath => NewLine (
-        List.foldMapr Concat NewLine (Text "") [
-          Def ("codepath","",Text (Filename.toString codepath ^ "/")),  (* set \codepath, used by \path{} *)
-          Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
-          Import (#root problem / Filename.` "writeup","writeup"),
-          ClearPage,
-          StepCounter "problem",
-          IfNum (  (* guarantee each problem uses exactly one section, so taskscore switch works *)
-            (Counter "problem",EQUAL,Counter "section"),
-            Text "",
-            Error (Text ("Problem used multiple sections: " ^ Filename.toString (#root problem)))
+      val writeup = fn problem : t => fn codepath => M.NewLine (
+        List.foldMapr M.Concat M.NewLine (M.Text "") [
+          M.Def ("codepath","",M.Text (Filename.toString codepath ^ "/")),  (* set \codepath, used by \path{} *)
+          M.Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
+          M.Import (#root problem / Filename.` "writeup","writeup"),
+          M.ClearPage,
+          M.StepCounter "problem",
+          M.IfNum (  (* guarantee each problem uses exactly one section, so taskscore switch works *)
+            (N.Counter "problem",EQUAL,N.Counter "section"),
+            M.Text "",
+            M.Error (M.Text ("Problem used multiple sections: " ^ Filename.toString (#root problem)))
           )
         ]
       )
