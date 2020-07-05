@@ -4,5 +4,5 @@ signature GRADER =
 
     include LOADABLE
     val stage : t -> Filename.absolute Filename.t -> Library.t list
-    val tasks : t -> (string * Score.t) list
+    val tasks : t -> (string * Score.t * Filename.relative Filename.t) list
   end
