@@ -48,30 +48,29 @@ functor Assignment (Problem : PROBLEM) :> ASSIGNMENT =
     end
 
     local
-      datatype number = datatype LaTeX.number
-      datatype latex = datatype LaTeX.t
+      structure M = LaTeX.Macro
     in
       val writeup = fn assignment : t => fn documentclass => fn location => (
         FileUtils.write TextIO.openOut (
           Filename.toString location,
-          LaTeX.toString (
-            List.foldMapr Concat NewLine (Text "") [
-              DocumentClass documentclass,
-              NewCounter "problem",
-              UsePackage (SOME "subpreambles=true,sort=true,mode=buildnew","standalone"),
-              UsePackage (NONE,"import"),
-              Environment (
+          LaTeX.Macro.toString (
+            List.foldMapr M.Concat M.NewLine (M.Text "") [
+              M.DocumentClass documentclass,
+              M.NewCounter "problem",
+              M.UsePackage (SOME "subpreambles=true,sort=true,mode=buildnew","standalone"),
+              M.UsePackage (NONE,"import"),
+              M.Environment (
                 "document",
-                Concat (
-                  Concat (TableOfContents,ClearPage),
+                M.Concat (
+                  M.Concat (M.TableOfContents,M.ClearPage),
                   List.foldMapr
-                    Concat
+                    M.Concat
                     (fn (name,problem) =>
                       Problem.writeup
                         (Remote.! problem)
                         (CODE / Filename.` name)
                     )
-                    (Text "")
+                    (M.Text "")
                     (#problems assignment)
                 )
               )
