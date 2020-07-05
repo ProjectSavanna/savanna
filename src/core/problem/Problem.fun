@@ -28,15 +28,18 @@ functor Problem (Grader : GRADER) :> PROBLEM =
     local
       structure N = LaTeX.Number
       structure M = LaTeX.Macro
-      val makeSwitch =
+      val makeSwitch = fn codepath =>
         List.foldri
-          (fn (i,(name,score),acc) =>
+          (fn (i,(name,score,filename),acc) =>
             M.IfNum (
               (N.Counter "task",EQUAL,N.Constant (i + 1)),  (* check if task counter (one-indexed) matches *)
               M.NewLine (
                 M.IfStrEqual (  (* cross-validate label in writeup with expected label *)
                   ("#1",name),
-                  M.Text (Grader.Score.toString score),
+                  M.Concat (
+                    M.Text (Grader.Score.toString score ^ ", "),
+                    M.Font (LaTeX.Font.TeleType, M.Text (Filename.toString (codepath / filename)))
+                  ),
                   M.Error (M.Concat (M.Text ("Invalid placement of task: " ^ name ^ " at "), M.GetCounter "task"))
                 )
               ),
@@ -49,7 +52,7 @@ functor Problem (Grader : GRADER) :> PROBLEM =
       val writeup = fn problem : t => fn codepath => M.NewLine (
         List.foldMapr M.Concat M.NewLine (M.Text "") [
           M.Def ("codepath","",M.Text (Filename.toString codepath ^ "/")),  (* set \codepath, used by \path{} *)
-          M.Def ("taskscore","#1",makeSwitch (Remote.! (#grader problem))),
+          M.Def ("taskscore","#1",makeSwitch codepath (Remote.! (#grader problem))),
           M.Import (#root problem / Filename.` "writeup","writeup"),
           M.ClearPage,
           M.StepCounter "problem",
