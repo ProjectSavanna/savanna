@@ -13,8 +13,9 @@ structure CodeGrader :> GRADER =
       end
 
     type t = Filename.absolute Filename.t * {
-      name   : string,
-      points : Score.t
+      name     : string,
+      points   : Score.t,
+      filename : Filename.relative Filename.t
     } list
 
     val op / = Filename.concat
@@ -25,8 +26,9 @@ structure CodeGrader :> GRADER =
         path,
         JSONUtil.arrayMap
           (fn obj => {
-            name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
-            points = Score.fromJSON (JSONUtil.lookupField obj "points")
+            name     = JSONUtil.asString (JSONUtil.lookupField obj "name"),
+            points   = Score.fromJSON (JSONUtil.lookupField obj "points"),
+            filename = Filename.` (JSONUtil.asString (JSONUtil.lookupField obj "filename"))
           })
           (FileUtils.parseJSON (path / Filename.` "grader.json"))
       )
@@ -35,5 +37,8 @@ structure CodeGrader :> GRADER =
     val stage = fn (root,_) => fn location =>
       nil before FileUtils.copyTree (root,location)
 
-    val tasks = fn (_,tasks) : t => List.map (fn item => (#name item, #points item)) tasks
+    val tasks = fn (_,tasks) : t =>
+      List.map
+        (fn item => (#name item, #points item, #filename item))
+        tasks
   end
