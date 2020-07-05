@@ -9,7 +9,7 @@ functor Problem (Score :
 
     type t = {
       root      : Filename.absolute Filename.t,
-      files     : Filename.relative Filename.t list,
+      code      : bool,
       tasks     : {
         name   : string,
         points : Score.t,
@@ -24,12 +24,12 @@ functor Problem (Score :
       get = fn path => (
         case FileUtils.parseJSON (path / Filename.` "problem.json") of
           JSON.OBJECT [
-            ("files"    , files    ),
+            ("code"     , code     ),
             ("tasks"    , tasks    ),
             ("libraries", libraries)
           ] => {
             root = path,
-            files = JSONUtil.arrayMap (Filename.` o JSONUtil.asString) files,
+            code = JSONUtil.asBool code,
             tasks = JSONUtil.arrayMap
               (fn obj => {
                 name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
@@ -85,9 +85,9 @@ functor Problem (Score :
     end
 
     val handout = fn problem : t => fn location => #libraries problem before (
-      case List.null (#files problem) of
-        false => FileUtils.copyTree (#root problem / Filename.` "code", location)
-      | true  => ()
+      case #code problem of
+        false => ()
+      | true  => FileUtils.copyTree (#root problem / Filename.` "code", location)
     )
 
     val grader = fn problem : t => fn location => #libraries problem before
