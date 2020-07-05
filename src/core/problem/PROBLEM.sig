@@ -1,6 +1,6 @@
 signature PROBLEM =
   sig
-    structure Score : sig include MONOID SHOW end
+    structure Score : SCORE
 
     include LOADABLE
     val score   : t -> Score.t

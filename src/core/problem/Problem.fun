@@ -1,9 +1,4 @@
-functor Problem (Score :
-  sig
-    include MONOID SHOW
-    val fromJSON : JSON.value -> t
-  end
-) :> PROBLEM where Score = Score =
+functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
   struct
     structure Score = Score
 
