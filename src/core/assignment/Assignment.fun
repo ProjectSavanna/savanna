@@ -87,7 +87,9 @@ functor Assignment (Problem : PROBLEM) :> ASSIGNMENT =
       val op |> = Util.|>
       val stageCode = fn stage => fn location => fn problems => (
         OS.FileSys.mkDir (Filename.toString location);
-        List.concatMap (fn (name,problem) => stage problem (location / Filename.` name)) problems
+        problems
+        |> List.map (fn (name,problem) => stage problem (location / Filename.` name))
+        |> List.foldr (Fn.uncurry LibrarySet.union) LibrarySet.empty
       )
       val LIBRARIES = (
         case OS.Process.getEnv "SAVANNA_LIBRARIES" of
@@ -98,11 +100,12 @@ functor Assignment (Problem : PROBLEM) :> ASSIGNMENT =
             | SOME p => p
           )
       )
+      val stageLibrary = fn location => fn library =>
+        Library.stage LIBRARIES library (location / Filename.` library)
       val stageLibraries = fn location => fn libraries => (
         OS.FileSys.mkDir (Filename.toString location);
         libraries
-        |> Util.unique Library.compare
-        |> List.app (fn library => Library.stage LIBRARIES library (location / Filename.` library))
+        |> LibrarySet.app (stageLibrary location)
       )
       val aux = fn (stage,dir) => fn assignment : t => fn location => (
         OS.FileSys.mkDir (Filename.toString location);

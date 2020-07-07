@@ -1,9 +1,13 @@
 Library
   signature LIBRARY
   structure Library
+
+  structure LibrarySet
 is
   $SMACKAGE/cmlib/v2/cmlib.cm
   ../../util/sources.cm
 
   LIBRARY.sig
   Library.sml
+
+  LibrarySet.sml
