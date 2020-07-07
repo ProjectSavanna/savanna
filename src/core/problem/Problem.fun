@@ -70,6 +70,11 @@ functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
           M.Import (#root problem / Filename.` "writeup","writeup"),
           M.ClearPage,
           M.StepCounter "problem",
+          M.IfNum (  (* guarantee each problem includes all tasks *)
+            (N.Counter "task",EQUAL,N.Constant (List.length (#tasks problem))),
+            M.Text "",
+            M.Error (M.Text ("Incorrect number of tasks in problem: " ^ Filename.toString (#root problem)))
+          ),
           M.IfNum (  (* guarantee each problem uses exactly one section, so taskscore switch works *)
             (N.Counter "problem",EQUAL,N.Counter "section"),
             M.Text "",
