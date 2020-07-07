@@ -4,7 +4,7 @@ Library
   signature PROBLEM
   functor Problem
 is
-  $/basis.cm
+  $SMACKAGE/cmlib/v2/cmlib.cm
   $/json-lib.cm
   ../sigs/sources.cm
   ../../util/sources.cm

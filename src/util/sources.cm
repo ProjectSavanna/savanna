@@ -1,6 +1,4 @@
 Library
-  signature ORDERED
-
   signature FILENAME
   structure Filename
 
@@ -15,8 +13,6 @@ is
   $/basis.cm
   $/json-lib.cm
   $/smlnj-lib.cm
-
-  ORDERED.sig
 
   FILENAME.sig
   Filename.sml
