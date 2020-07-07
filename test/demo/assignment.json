@@ -1,0 +1,9 @@
+{
+  "name": "demo",
+  "title": "Demo Assignment",
+  "problems": ["demo-problem"],
+  "dates": {
+    "out": "Wed Jun  1 18:00:00 2020",
+    "due": "Tue Jun  7 23:59:59 2020"
+  }
+}
