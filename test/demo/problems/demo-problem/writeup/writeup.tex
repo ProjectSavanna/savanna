@@ -1,0 +1,24 @@
+\documentclass[crop=false]{standalone}
+
+\usepackage{parskip}
+
+\newcounter{task}[section]
+\newcommand{\task}[1]{\stepcounter{task}\textbf{Task \arabic{section}.\arabic{task}.} (\taskscore{#1})}
+
+\begin{document}
+
+\section{Welcome to the Savanna}
+
+In this problem, we test the infrastructure.
+
+\subsection{Introduction}
+
+First, a brief introduction.
+
+\subsection{Implementations}
+
+\task{fact} Implement the factorial function.
+
+\task{fib} Implement the Fibonacci function.
+
+\end{document}
