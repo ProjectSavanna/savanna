@@ -10,7 +10,7 @@ functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
         points : Score.t,
         filename : Filename.relative Filename.t
       } list,
-      libraries : Library.t list
+      libraries : LibrarySet.set
     }
 
     val op / = Filename.concat
@@ -32,7 +32,12 @@ functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
                 filename = Filename.` (JSONUtil.asString (JSONUtil.lookupField obj "filename"))
               })
               tasks,
-            libraries = JSONUtil.arrayMap JSONUtil.asString libraries
+            libraries = (
+              List.foldr
+                (Fn.flip (Fn.uncurry LibrarySet.insert))
+                LibrarySet.empty
+                (JSONUtil.arrayMap JSONUtil.asString libraries)
+            )
           }
         | _ => raise Fail ("Invalid problem at " ^ Filename.toString path)
       )
