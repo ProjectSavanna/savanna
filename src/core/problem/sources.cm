@@ -1,6 +1,8 @@
 Library
   signature SCORE
 
+  signature GRADER
+
   signature PROBLEM
   functor Problem
 is
@@ -12,6 +14,8 @@ is
   ../library/sources.cm
 
   SCORE.sig
+
+  GRADER.sig
 
   PROBLEM.sig
   Problem.fun
