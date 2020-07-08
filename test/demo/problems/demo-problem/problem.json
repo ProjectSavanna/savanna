@@ -3,13 +3,11 @@
   "tasks": [
     {
       "name": "fact",
-      "points": 6,
       "filename": "foo.sml"
     },
     {
       "name": "fib",
       "extra": ["should", "be", "ignored"],
-      "points": 28,
       "filename": "foo.sml"
     }
   ],

@@ -9,7 +9,7 @@ local
       | n => Int.toString n ^ " points"
       val fromJSON = JSONUtil.asInt
     end
-  structure A = Assignment (Problem (IntScore))
+  structure A = Assignment (Problem (CodeGrader (IntScore)))
   val a = A.load (Filename.$ "demo") ()
   val [writeup] = CommandLine.arguments ()
 in
