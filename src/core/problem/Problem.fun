@@ -1,14 +1,14 @@
-functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
+functor Problem (Grader : GRADER) :> PROBLEM where Score = Grader.Score =
   struct
-    structure Score = Score
+    structure Score = Grader.Score
 
     type t = {
       root      : Filename.absolute Filename.t,
       code      : bool,
       tasks     : {
-        name   : string,
-        points : Score.t,
-        filename : Filename.relative Filename.t
+        name     : string,
+        filename : Filename.relative Filename.t,
+        grader   : Grader.t Remote.t
       } list,
       libraries : LibrarySet.set
     }
@@ -24,11 +24,17 @@ functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
           root = path,
           code = JSONUtil.asBool code,
           tasks = JSONUtil.arrayMap
-            (fn obj => {
-              name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
-              points = Score.fromJSON (JSONUtil.lookupField obj "points"),
-              filename = Filename.` (JSONUtil.asString (JSONUtil.lookupField obj "filename"))
-            })
+            (fn obj =>
+              let
+                val name = JSONUtil.asString (JSONUtil.lookupField obj "name")
+              in
+                {
+                  name = name,
+                  filename = Filename.` (JSONUtil.asString (JSONUtil.lookupField obj "filename")),
+                  grader = Grader.load (path / Filename.` "grader" / Filename.` "tasks" / Filename.` name)
+                }
+              end
+            )
             tasks,
           libraries = (
             List.foldr
@@ -40,21 +46,25 @@ functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
       | _ => raise Fail ("Invalid problem at " ^ Filename.toString path)
     )
 
-    val score : t -> Score.t = List.foldr Score.f Score.z o List.map #points o #tasks
+    val app = fn f => f ()
+    val score : t -> Score.t =
+      List.foldr Score.f Score.z
+      o List.map (Grader.score o app o #grader)
+      o #tasks
 
     local
       structure N = LaTeX.Number
       structure M = LaTeX.Macro
       val makeSwitch = fn codepath =>
         List.foldri
-          (fn (i,{name=name,points=score,filename=filename},acc) =>
+          (fn (i,{name=name,filename=filename,grader=grader},acc) =>
             M.IfNum (
               (N.Counter "task",EQUAL,N.Constant (i + 1)),  (* check if task counter (one-indexed) matches *)
               M.NewLine (
                 M.IfStrEqual (  (* cross-validate label in writeup with expected label *)
                   ("#1",name),
                   M.Concat (
-                    M.Text (Score.toString score ^ ", "),
+                    M.Text (Score.toString (Grader.score (grader ())) ^ ", "),
                     M.Font (LaTeX.Font.TeleType, M.Text (Filename.toString (codepath / filename)))
                   ),
                   M.Error (M.Concat (M.Text ("Invalid placement of task: " ^ name ^ " at "), M.GetCounter "task"))
@@ -92,6 +102,6 @@ functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
       | true  => FileUtils.copyTree (#root problem / Filename.` "code", location)
     )
 
-    val grader = fn problem : t => fn location => #libraries problem before
-      FileUtils.copyTree (#root problem / Filename.` "grader", location)
+    val grader : t -> Filename.absolute Filename.t -> LibrarySet.set =
+      Grader.build o Grader.combine o List.map (app o #grader) o #tasks
   end
