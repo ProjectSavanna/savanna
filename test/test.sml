@@ -10,10 +10,10 @@ local
       val fromJSON = JSONUtil.asInt
     end
   structure A = Assignment (Problem (IntScore))
-  val a' = A.load (Filename.$ "demo")
+  val a = A.load (Filename.$ "demo") ()
   val [writeup] = CommandLine.arguments ()
 in
-  val () = A.writeup (Remote.! a') "article" (Filename.$ writeup)
+  val () = A.writeup a "article" (Filename.$ writeup)
 end
 
 val () = OS.Process.exit OS.Process.success

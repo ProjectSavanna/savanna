@@ -14,34 +14,31 @@ functor Problem (Score : SCORE) :> PROBLEM where Score = Score =
     }
 
     val op / = Filename.concat
-    val load = fn path => Remote.hide {
-      path = path,
-      get = fn path => (
-        case FileUtils.parseJSON (path / Filename.` "problem.json") of
-          JSON.OBJECT [
-            ("code"     , code     ),
-            ("tasks"    , tasks    ),
-            ("libraries", libraries)
-          ] => {
-            root = path,
-            code = JSONUtil.asBool code,
-            tasks = JSONUtil.arrayMap
-              (fn obj => {
-                name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
-                points = Score.fromJSON (JSONUtil.lookupField obj "points"),
-                filename = Filename.` (JSONUtil.asString (JSONUtil.lookupField obj "filename"))
-              })
-              tasks,
-            libraries = (
-              List.foldr
-                (Fn.flip (Fn.uncurry LibrarySet.insert))
-                LibrarySet.empty
-                (JSONUtil.arrayMap JSONUtil.asString libraries)
-            )
-          }
-        | _ => raise Fail ("Invalid problem at " ^ Filename.toString path)
-      )
-    }
+    val load = fn path => fn () => (
+      case FileUtils.parseJSON (path / Filename.` "problem.json") of
+        JSON.OBJECT [
+          ("code"     , code     ),
+          ("tasks"    , tasks    ),
+          ("libraries", libraries)
+        ] => {
+          root = path,
+          code = JSONUtil.asBool code,
+          tasks = JSONUtil.arrayMap
+            (fn obj => {
+              name   = JSONUtil.asString (JSONUtil.lookupField obj "name"),
+              points = Score.fromJSON (JSONUtil.lookupField obj "points"),
+              filename = Filename.` (JSONUtil.asString (JSONUtil.lookupField obj "filename"))
+            })
+            tasks,
+          libraries = (
+            List.foldr
+              (Fn.flip (Fn.uncurry LibrarySet.insert))
+              LibrarySet.empty
+              (JSONUtil.arrayMap JSONUtil.asString libraries)
+          )
+        }
+      | _ => raise Fail ("Invalid problem at " ^ Filename.toString path)
+    )
 
     val score : t -> Score.t = List.foldr Score.f Score.z o List.map #points o #tasks
 

@@ -21,30 +21,27 @@ functor Assignment (Problem : PROBLEM) :> ASSIGNMENT =
         Problem.load (path / Filename.` "problems" / Filename.` name)
       )
     in
-      val load = fn path => Remote.hide {
-        path = path,
-        get = fn path => (
-          case FileUtils.parseJSON (path / Filename.` "assignment.json") of
-            JSON.OBJECT [
-              ("name", name),
-              ("title", title),
-              ("problems", problems),
-              ("dates", JSON.OBJECT [
-                ("out", out),
-                ("due", due)
-              ])
-            ] => {
-              name = JSONUtil.asString name,
-              title = JSONUtil.asString title,
-              problems = JSONUtil.arrayMap (loadProblem path o JSONUtil.asString) problems,
-              dates = {
-                out = dateFromJSON out,
-                due = dateFromJSON due
-              }
+      val load = fn path => fn () => (
+        case FileUtils.parseJSON (path / Filename.` "assignment.json") of
+          JSON.OBJECT [
+            ("name", name),
+            ("title", title),
+            ("problems", problems),
+            ("dates", JSON.OBJECT [
+              ("out", out),
+              ("due", due)
+            ])
+          ] => {
+            name = JSONUtil.asString name,
+            title = JSONUtil.asString title,
+            problems = JSONUtil.arrayMap (loadProblem path o JSONUtil.asString) problems,
+            dates = {
+              out = dateFromJSON out,
+              due = dateFromJSON due
             }
-          | _ => raise Fail "Invalid problem"
-        )
-      }
+          }
+        | _ => raise Fail "Invalid problem"
+      )
     end
 
     local
@@ -69,7 +66,7 @@ functor Assignment (Problem : PROBLEM) :> ASSIGNMENT =
                     M.Concat
                     (fn (name,problem) =>
                       Problem.writeup
-                        (Remote.! problem)
+                        (problem ())
                         (CODE / Filename.` name)
                     )
                     (M.Text "")
@@ -111,7 +108,7 @@ functor Assignment (Problem : PROBLEM) :> ASSIGNMENT =
         OS.FileSys.mkDir (Filename.toString location);
         assignment
         |> #problems
-        |> List.map (fn (name,r) => (name, Remote.! r))
+        |> List.map (fn (name,r) => (name, r ()))
         |> stageCode stage (location / dir)
         |> stageLibraries (location / Filename.` "lib")
       )

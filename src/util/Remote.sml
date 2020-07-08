@@ -1,11 +1,4 @@
-structure Remote :> REMOTE =
+structure Remote =
   struct
-    type 'a t = {
-      path : Filename.absolute Filename.t,
-      get  : Filename.absolute Filename.t -> 'a
-    }
-
-    val hide = Fn.id
-
-    val ! = fn {path,get} => get path
+    type 'a t = unit -> 'a
   end

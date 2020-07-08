@@ -4,8 +4,6 @@ Library
 
   structure FileUtils
   structure Util
-
-  signature REMOTE
   structure Remote
 
   structure LaTeX
@@ -19,8 +17,6 @@ is
 
   FileUtils.sml
   Util.sml
-
-  REMOTE.sig
   Remote.sml
 
   LaTeX.sml
