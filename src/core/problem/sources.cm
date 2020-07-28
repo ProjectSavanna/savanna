@@ -7,13 +7,14 @@ Library
   signature PROBLEM
   functor Problem
 is
-  $SMACKAGE/cmlib/v2/cmlib.cm
+  cmlib.cm
   $/json-lib.cm
   ../sigs/sources.cm
   ../../util/sources.cm
 
   ../library/sources.cm
 
+  $SMACKAGE/typeclasses/v1/sources.cm
   SCORE.sig
 
   GRADER.sig

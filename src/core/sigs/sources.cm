@@ -1,5 +1,4 @@
 Library
-  signature SHOW
   signature MONOID
 
   signature LOADABLE
@@ -7,7 +6,6 @@ Library
 is
   ../../util/sources.cm
 
-  SHOW.sig
   MONOID.sig
 
   LOADABLE.sig

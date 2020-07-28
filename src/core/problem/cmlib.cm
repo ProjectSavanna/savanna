@@ -1,0 +1,4 @@
+Library
+  library($SMACKAGE/cmlib/v2/cmlib.cm) - signature ORDERED
+is
+  $SMACKAGE/cmlib/v2/cmlib.cm
